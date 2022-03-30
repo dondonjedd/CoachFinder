@@ -1,9 +1,9 @@
 <template>
 <li>
     <h3>{{fullName}}</h3>
-    <h4>{{hourlyRate}}</h4>
+    <h4>${{hourlyRate}}/hour</h4>
     <div>
-        <span v-for="area in areas" :key="area" >{{area}}</span>
+        <base-badge v-for="area in areas" :key="area" :type="area">{{area.toUpperCase()}}</base-badge>
     </div>
     <div class="actions">
         <base-button link :to="coachContactLink" mode="outline">contact</base-button>
