@@ -6,6 +6,19 @@ export default createStore({
     modules: {
         coach: Coaches,
         req: Requests,
+    },
+
+    state() {
+        return {
+            userId: "c3",
+        }
+    },
+
+    getters: {
+        userId(state) {
+            return state.userId
+        }
+
     }
 
 })

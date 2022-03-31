@@ -20,6 +20,18 @@ export default {
         }
     },
 
+    mutations: {
+        addCoach(state, payload) {
+            state.coaches.push(payload)
+        }
+    },
+
+    actions: {
+        addCoach(context, payload) {
+            context.commit("addCoach", payload)
+        }
+    },
+
     getters: {
         coaches(state) {
             return state.coaches
