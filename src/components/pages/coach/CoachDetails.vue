@@ -1,27 +1,57 @@
 <template>
-        <base-card>
-        <h3>{{coach.firstName}}  {{coach.lastName}}</h3>
-        <h4>${{coach.hourlyRate}}/hour</h4>
-        <h4>{{coach.description}}/hour</h4>
-        <base-button link :to="linkToCoach">Contatct the coach</base-button>
-        <router-view></router-view>
+<section>
+    <base-card>
+        <h2>{{fullName}}</h2>
+        <h3>${{rate}}/hour</h3>
+            <base-badge v-for="area in areas" :key="area" :type="area">{{area.toUpperCase()}}</base-badge>
+    <p>{{description}}</p>
     </base-card>
+</section>
+<section>
+  <base-card>
+    <header>
+      <base-button link :to="linkToCoach">Contatct the coach</base-button>
+    </header>
+  </base-card>
+  <router-view></router-view>
+</section>
 </template>
 
 <script>
-import BaseButton from '../../UI/BaseButton.vue'
+import BaseCard from '../../UI/BaseCard.vue'
 export default {
-  components: { BaseButton },
+  components: { BaseCard },
     props:["id"],
+    data() {
+      return {
+        coach:null
+      }
+    },
+
+    created(){
+      this.coach = this.$store.getters["coach/coaches"].find(aCoach=>aCoach.id===this.id)
+    },
     computed:{
+
+        fullName(){
+            return this.coach.firstName +" "+ this.coach.lastName
+        },
+
+        rate(){
+          return this.coach.hourlyRate
+        },
+
+        description(){
+          return this.coach.description
+        },
+
+        areas(){
+          return this.coach.areas
+        },
+
         linkToCoach(){
             return "/coaches/" + this.id +"/contact"
         },
-
-        coach(){
-            const allCoaches =this.$store.getters["coach/coaches"]
-            return allCoaches.find(aCoach=>aCoach.id===this.id)
-        }
     }
 }
 </script>

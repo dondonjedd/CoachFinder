@@ -1,8 +1,9 @@
 <template>
 <section>
-    Filter
+    <base-card>
+        <coach-filter @change-filter="updateFilters"></coach-filter>
+    </base-card>
 </section>
-
 <section>
     <base-card>
         <div class=controls>
@@ -26,20 +27,52 @@
 </template>
 
 <script>
-import CoachItem from "../../Items/CoachItem.vue"
+import CoachItem from "../../coaches/CoachItem.vue"
+import CoachFilter from "../../coaches/CoachFilter.vue"
+import BaseCard from '../../UI/BaseCard.vue'
 export default {
     components:{
-        CoachItem
+        CoachItem,
+        CoachFilter,
+        BaseCard
+    },
+    data() {
+        return {
+            coachFilter:{
+                frontend:true,
+                backend:true,
+                career:true,
+            }
+        }
     },
     computed:{
         filteredCoaches(){
-            return this.$store.getters["coach/coaches"]
+            const allCoaches = this.$store.getters["coach/coaches"]
+            return allCoaches.filter( coach => {
+                if(coach.areas.includes('frontend')&&!this.coachFilter.frontend){
+                    return false
+                }
+                if(coach.areas.includes('backend')&&!this.coachFilter.backend){
+                    return false
+                }
+                if(coach.areas.includes('career')&&!this.coachFilter.career){
+                    return false
+                }
+                return true
+            } )
+
+  
         },
 
         hasCoaches(){
             return this.$store.getters["coach/hasCoaches"]
         }
-    }
+    },
+    methods: {
+        updateFilters(updatedFilter){
+            this.coachFilter=updatedFilter
+        }
+    },
 }
 </script>
 
