@@ -10,10 +10,10 @@
 <section>
   <base-card>
     <header>
-      <base-button link :to="linkToCoach">Contatct the coach</base-button>
+      <base-button v-if="!contactIsShowing" link :to="linkToCoach" @click="toggleContactIsSharing">Contatct the coach</base-button>
+      <router-view v-else></router-view>
     </header>
   </base-card>
-  <router-view></router-view>
 </section>
 </template>
 
@@ -24,7 +24,8 @@ export default {
     props:["id"],
     data() {
       return {
-        coach:null
+        coach:null,
+        contactIsShowing:false,
       }
     },
 
@@ -52,7 +53,13 @@ export default {
         linkToCoach(){
             return "/coaches/" + this.id +"/contact"
         },
-    }
+    },
+
+    methods: {
+      toggleContactIsSharing(){
+        this.contactIsShowing = ! this.contactIsShowing
+      }
+    },
 }
 </script>
 
