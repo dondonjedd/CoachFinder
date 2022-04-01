@@ -72,9 +72,11 @@ export default {
             const newRequest = {
                 id: "r" +(this.$store.getters["req/allRequests"].length+1),
                 email:this.email.val,
-                message:this.message.val
+                message:this.message.val,
+                coachId: this.$route.params.id
             }
             this.$store.dispatch('req/addRequest',newRequest)
+            this.$router.replace("/coaches")
         }
     },
 }
