@@ -10,7 +10,7 @@
 <section>
   <base-card>
     <header>
-      <base-button v-if="!contactIsShowing" link :to="linkToCoach" @click="toggleContactIsSharing">Contatct the coach</base-button>
+      <base-button v-if="!showContactForm" link :to="linkToCoach" >Contatct the coach</base-button>
       <router-view v-else></router-view>
     </header>
   </base-card>
@@ -33,6 +33,9 @@ export default {
       this.coach = this.$store.getters["coach/coaches"].find(aCoach=>aCoach.id===this.id)
     },
     computed:{
+        showContactForm(){
+          return this.$route.matched.some(name => name.path.endsWith("contact"))
+        },
 
         fullName(){
             return this.coach.firstName +" "+ this.coach.lastName
@@ -51,14 +54,11 @@ export default {
         },
 
         linkToCoach(){
-            return "/coaches/" + this.id +"/contact"
+          return "/coaches/" + this.id +"/contact"
         },
     },
 
     methods: {
-      toggleContactIsSharing(){
-        this.contactIsShowing = ! this.contactIsShowing
-      }
     },
 }
 </script>
