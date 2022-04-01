@@ -7,7 +7,7 @@
 <section>
     <base-card>
         <div class=controls>
-            <base-button mode="outline">Refresh</base-button>
+            <base-button mode="outline" @click="refreshCoaches">Refresh</base-button>
             <base-button v-if="!isCoachRegistered" link to="/registration">Registration</base-button>
         </div>
         <ul v-if="hasCoaches">
@@ -76,6 +76,10 @@ export default {
     methods: {
         updateFilters(updatedFilter){
             this.coachFilter=updatedFilter
+        },
+
+        refreshCoaches(){
+            this.$store.dispatch("coach/updateCoaches")
         }
     },
 }

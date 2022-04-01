@@ -10,7 +10,7 @@ export default createStore({
 
     state() {
         return {
-            userId: "c1",
+            userId: "c3",
         }
     },
 

@@ -120,14 +120,12 @@ export default {
             }
         },
 
-        submitForm(){
+        async submitForm(){
             this.checkFormValidity()
             if(!this.isFormValid){
                 return
             }
-
             const newCoach = {
-                id: "c"+(this.$store.getters["coach/coaches"].length+1),
                 firstName: this.firstName.val,
                 lastName: this.lastName.val,
                 areas: this.areas.val,

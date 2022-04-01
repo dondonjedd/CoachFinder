@@ -29,13 +29,13 @@ export default {
             return state.requests
         },
 
-        requestReceived(state, _, rootState) {
-            return state.requests.filter(req => req.coachId === rootState.userId)
+        requestReceived(state, _, _2, rootGetters) {
+            return state.requests.filter(req => req.coachId === rootGetters.userId)
 
         },
 
-        hasRequest(state, _, rootState) {
-            return state.requests.some(req => req.coachId === rootState.userId) && state.requests.length > 0
+        hasRequest(_, getters) {
+            return getters.requestReceived && getters.requestReceived.length > 0
         }
 
     }

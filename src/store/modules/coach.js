@@ -23,12 +23,63 @@ export default {
     mutations: {
         addCoach(state, payload) {
             state.coaches.push(payload)
+        },
+
+        updateCoaches(state, payload) {
+            state.coaches = payload
         }
     },
 
     actions: {
-        addCoach(context, payload) {
-            context.commit("addCoach", payload)
+        async addCoach(context, payload) {
+            const userId = context.rootGetters.userId
+
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json`, {
+                method: "PUT",
+                body: JSON.stringify(payload)
+            })
+
+
+            if (!response.ok) {
+                //error
+                console.log("error sending data")
+                return
+            }
+
+            context.commit("addCoach", {
+                ...payload,
+                id: userId
+            })
+        },
+
+        async updateCoaches(context) {
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`)
+
+            const responseData = await response.json()
+
+            if (!response.ok) {
+                console.log("error fetching data")
+                return
+            }
+
+            const coaches = []
+
+
+            for (const key in responseData) {
+                const coach = {
+                    id: key,
+                    firstName: responseData[key].firstName,
+                    lastName: responseData[key].lastName,
+                    areas: responseData[key].areas,
+                    description: responseData[key].description,
+                    hourlyRate: responseData[key].hourlyRate
+                }
+
+                coaches.push(coach)
+            }
+
+
+            context.commit("updateCoaches", coaches)
         }
     },
 
