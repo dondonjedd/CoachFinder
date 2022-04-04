@@ -132,8 +132,11 @@ export default {
                 description: this.description.val,
                 hourlyRate: this.hourlyRate.val,
             }
-
-            this.$store.dispatch("coach/addCoach",newCoach)
+            try {
+                await this.$store.dispatch("coach/addCoach",newCoach)
+            } catch (error) {
+                console.log(error)
+            }
             this.$router.replace('/coaches')
         }
     },
