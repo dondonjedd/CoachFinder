@@ -53,7 +53,7 @@ export default {
         },
 
         async updateCoaches(context) {
-            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`)
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.jso`)
 
             const responseData = await response.json()
 
