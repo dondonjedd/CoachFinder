@@ -24,8 +24,9 @@ export default {
     actions: {
         async addCoach(context, payload) {
             const userId = context.rootGetters.userId
+            const token = context.rootGetters.token
 
-            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json`, {
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json?auth=${token}`, {
                 method: "PUT",
                 body: JSON.stringify(payload)
             })

@@ -66,15 +66,17 @@ export default {
             }
             //send http request
 
+            const actionPayload = {
+                email: this.email,
+                password: this.password
+            }
+
             this.isLoading=true
             try {
                 if(this.mode==="login"){
-                    //login
+                    await this.$store.dispatch("logIn",actionPayload) 
                 }else{
-                    await this.$store.dispatch("signUp",{
-                        email: this.email,
-                        password: this.password
-                    }) 
+                    await this.$store.dispatch("signUp",actionPayload) 
                 }
             } catch (e) {
                 console.log(e)

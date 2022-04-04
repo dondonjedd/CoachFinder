@@ -44,7 +44,9 @@ export default {
 
         async updateRequests(context) {
             const cID = context.rootGetters.userId
-            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/requests/${cID}.json`)
+            const token = context.rootGetters.token
+
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/requests/${cID}.json?auth=${token}`)
 
             const responseData = await response.json()
 
