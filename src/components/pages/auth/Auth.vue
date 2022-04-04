@@ -1,31 +1,42 @@
 <template>
-    
-    <base-card>
-        <form @submit.prevent="submitForm()">
-            <div class="form-control">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" v-model.trim="email">
-            </div>
-            <div class="form-control">
-                <label for="password">Password</label>
-                <input type="password" id="password" v-model.trim="password">
-            </div>
-            <p v-if="!isFormValid">Please enter a valid email and password (must be at least 6 characters long)</p>
-            <base-button>{{submitButtonCaption}}</base-button>
-            <base-button type="button" mode="flat" @click="switchAuthMode()">{{switchModeButtonCaption}}</base-button>
-        </form>
-    </base-card>
+    <div>
+        <base-dialog :show="!!error" @close="handleClose" title="An error occured">
+            <p>{{error}}</p>
+        </base-dialog>
+        <base-dialog :show="isLoading" title="Signing up...">
+            <base-spinner></base-spinner>
+        </base-dialog>
+        <base-card>
+            <form @submit.prevent="submitForm()">
+                <div class="form-control">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" v-model.trim="email">
+                </div>
+                <div class="form-control">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" v-model.trim="password">
+                </div>
+                <p v-if="!isFormValid">Please enter a valid email and password (must be at least 6 characters long)</p>
+                <base-button>{{submitButtonCaption}}</base-button>
+                <base-button type="button" mode="flat" @click="switchAuthMode()">{{switchModeButtonCaption}}</base-button>
+            </form>
+        </base-card>
+    </div>
 </template>
 
 
 <script>
+import BaseDialog from '../../UI/BaseDialog.vue'
 export default {
+  components: { BaseDialog },
     data() {
         return {
             email:"",
             password:"",
             isFormValid:true,
             mode:"login",
+            isLoading: false,
+            error:null,
         }
     },
 
@@ -47,15 +58,29 @@ export default {
     },
 
     methods: {
-        submitForm(){
+        async submitForm(){
             this.isFormValid=true
             if(this.email===""||!this.email.includes("@")||this.password.length<6){
                 this.isFormValid=false
                 return
             }
-
             //send http request
 
+            this.isLoading=true
+            try {
+                if(this.mode==="login"){
+                    //login
+                }else{
+                    await this.$store.dispatch("signUp",{
+                        email: this.email,
+                        password: this.password
+                    }) 
+                }
+            } catch (e) {
+                console.log(e)
+                this.error=e
+            }
+            this.isLoading=false
         },
         switchAuthMode (){
             if(this.mode==="login"){
@@ -63,6 +88,13 @@ export default {
             }else{
                 this.mode="login"
             }
+        },
+
+        async signUp(){
+        },
+
+        handleClose(){
+            this.error=null
         }
 
     },
