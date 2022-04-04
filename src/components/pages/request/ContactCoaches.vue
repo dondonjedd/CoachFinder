@@ -70,7 +70,6 @@ export default {
               return
             }
             const newRequest = {
-                id: "r" +(this.$store.getters["req/allRequests"].length+1),
                 email:this.email.val,
                 message:this.message.val,
                 coachId: this.$route.params.id

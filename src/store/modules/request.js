@@ -2,12 +2,7 @@ export default {
     namespaced: true,
     state() {
         return {
-            requests: [{
-                id: "r1",
-                email: "test@gmail.com",
-                message: "hello",
-                coachId: "c1"
-            }]
+            requests: []
         }
     },
 
@@ -19,8 +14,29 @@ export default {
     },
 
     actions: {
-        addRequest(context, payload) {
-            context.commit("addRequest", payload)
+        async addRequest(context, payload) {
+            const newRequest = {
+                email: payload.email,
+                message: payload.message,
+            }
+            const cID = payload.coachId
+
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/requests/${cID}.json`, {
+                method: "POST",
+                body: JSON.stringify(newRequest)
+            })
+
+            const responseData = await response.json()
+
+            newRequest.id = responseData.name
+            newRequest.coachId = cID
+
+            if (!response.ok) {
+                const error = new Error(responseData.message || "Failed to send requests")
+                throw error
+            }
+
+            context.commit("addRequest", newRequest)
         }
     },
 

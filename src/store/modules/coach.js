@@ -41,9 +41,8 @@ export default {
 
 
             if (!response.ok) {
-                //error
-                console.log("error sending data")
-                return
+                const error = new Error(response.message || "Failed to send requests")
+                throw error
             }
 
             context.commit("addCoach", {
@@ -53,13 +52,13 @@ export default {
         },
 
         async updateCoaches(context) {
-            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.jso`)
+            const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`)
 
             const responseData = await response.json()
 
             if (!response.ok) {
-                console.log("error fetching data")
-                return
+                const error = new Error(responseData.message || "Failed to fetch requests")
+                throw error
             }
 
             const coaches = []
