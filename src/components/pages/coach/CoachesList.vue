@@ -8,9 +8,13 @@
     <base-card>
         <div class=controls>
             <base-button mode="outline" @click="refreshCoaches">Refresh</base-button>
-            <base-button v-if="!isCoachRegistered" link to="/registration">Registration</base-button>
+            <base-button v-if="!isCoachRegistered && !isLoading" link to="/registration">Registration</base-button>
         </div>
-        <ul v-if="hasCoaches">
+
+        <div v-if="isLoading">
+            <base-spinner></base-spinner>
+        </div>
+        <ul v-else-if="hasCoaches">
             <coach-item v-for="coach in filteredCoaches" :key="coach.id"
                     :id = "coach.id"
                     :first-name = "coach.firstName"
@@ -38,6 +42,7 @@ export default {
     },
     data() {
         return {
+            isLoading:false,
             coachFilter:{
                 frontend:true,
                 backend:true,
@@ -45,6 +50,10 @@ export default {
             }
         }
     },
+    created(){
+        this.refreshCoaches();
+    },
+
     computed:{
         filteredCoaches(){
             const allCoaches = this.$store.getters["coach/coaches"]
@@ -78,8 +87,10 @@ export default {
             this.coachFilter=updatedFilter
         },
 
-        refreshCoaches(){
-            this.$store.dispatch("coach/updateCoaches")
+        async refreshCoaches(){
+            this.isLoading=true
+            await this.$store.dispatch("coach/updateCoaches")
+            this.isLoading=false
         }
     },
 }
