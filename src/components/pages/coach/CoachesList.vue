@@ -10,14 +10,14 @@
 <section>
     <base-card>
         <div class=controls>
-            <base-button mode="outline" @click="refreshCoaches">Refresh</base-button>
+            <base-button mode="outline" @click="refreshCoaches(true)">Refresh</base-button>
             <base-button v-if="!isCoachRegistered && !isLoading" link to="/registration">Registration</base-button>
         </div>
 
         <div v-if="isLoading">
             <base-spinner></base-spinner>
         </div>
-        <ul v-else-if="hasCoaches">
+        <ul v-else-if="hasCoaches && !isLoading">
             <coach-item v-for="coach in filteredCoaches" :key="coach.id"
                     :id = "coach.id"
                     :first-name = "coach.firstName"
@@ -91,10 +91,10 @@ export default {
             this.coachFilter=updatedFilter
         },
 
-        async refreshCoaches(){
+        async refreshCoaches(refresh=false){
             this.isLoading=true
             try {
-                await this.$store.dispatch("coach/updateCoaches")
+                await this.$store.dispatch("coach/updateCoaches",{forceRefresh:refresh})
             } catch (error) {
                 this.error = error.message || "Something went wrong"
             }

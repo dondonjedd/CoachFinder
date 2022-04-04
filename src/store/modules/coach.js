@@ -2,21 +2,8 @@ export default {
     namespaced: true,
     state() {
         return {
-            coaches: [{
-                id: 'c1',
-                firstName: 'Maximilian',
-                lastName: 'Schwarzmüller',
-                areas: ['frontend', 'backend', 'career'],
-                description: "I'm Maximilian and I've worked as a freelance web developer for years. Let me help you become a developer as well!",
-                hourlyRate: 30
-            }, {
-                id: 'c2',
-                firstName: 'Julie',
-                lastName: 'Jones',
-                areas: ['frontend', 'career'],
-                description: 'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
-                hourlyRate: 30
-            }]
+            coaches: [],
+            lastFetchedTime: null,
         }
     },
 
@@ -27,6 +14,10 @@ export default {
 
         updateCoaches(state, payload) {
             state.coaches = payload
+        },
+
+        setLastFetchedTime(state) {
+            state.lastFetchedTime = new Date().getTime()
         }
     },
 
@@ -51,7 +42,9 @@ export default {
             })
         },
 
-        async updateCoaches(context) {
+        async updateCoaches(context, payload) {
+            if (!payload.forceRefresh && !context.getters.shouldUpdate) { return }
+
             const response = await fetch(`https://vueproject-56465-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`)
 
             const responseData = await response.json()
@@ -79,7 +72,9 @@ export default {
 
 
             context.commit("updateCoaches", coaches)
-        }
+            context.commit("setLastFetchedTime")
+        },
+
     },
 
     getters: {
@@ -89,6 +84,11 @@ export default {
 
         hasCoaches(state) {
             return state.coaches && state.coaches.length > 0
+        },
+
+        shouldUpdate(state) {
+            const currentFetchTime = new Date().getTime()
+            return ((currentFetchTime - state.lastFetchedTime) / 1000) > 60
         }
     }
 }
