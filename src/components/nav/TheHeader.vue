@@ -7,7 +7,8 @@
                     <router-link to="/coaches">Coaches</router-link>
                 </li>
                 <li>
-                    <router-link to="/request">Requests</router-link>
+                    <router-link v-if="isLoggedIn" to="/request">Requests</router-link>
+                    <router-link v-else to="/auth">Login</router-link>
                 </li>
             </ul>
         </nav>
@@ -16,6 +17,11 @@
 
 <script>
 export default {
+  computed:{
+    isLoggedIn(){
+      return this.$store.getters.isAuthenticated
+    }
+  }
     
 }
 </script>
