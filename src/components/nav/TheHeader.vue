@@ -13,7 +13,7 @@
                     <router-link to="/auth">Login</router-link>
                 </li>
                 <li v-if="isLoggedIn">
-                    <router-link @click="logOut">logout</router-link>
+                    <base-button @click="logOut">logout</base-button>
                 </li>
             </ul>
         </nav>
@@ -21,7 +21,9 @@
 </template>
 
 <script>
+import BaseButton from '../UI/BaseButton.vue'
 export default {
+  components: { BaseButton },
   computed:{
     isLoggedIn(){
       return this.$store.getters.isAuthenticated
@@ -30,7 +32,8 @@ export default {
 
   methods: {
     logOut(){
-      this.$store.dispatch("logOut")
+        this.$store.dispatch("logOut")
+        this.$router.replace("/coaches")
     }
     
   },

@@ -10,7 +10,11 @@ import TheHeader from "./components/nav/TheHeader.vue"
 export default {
     components:{
         TheHeader,
-    }
+    },
+
+    created() {
+      this.$store.dispatch("autoLogin")
+    },
     
 }
 </script>

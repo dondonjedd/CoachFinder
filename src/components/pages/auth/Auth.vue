@@ -76,11 +76,16 @@ export default {
                 if(this.mode==="login"){
                     await this.$store.dispatch("logIn",actionPayload) 
                 }else{
+                    console.log("signing up")
                     await this.$store.dispatch("signUp",actionPayload) 
+                    console.log("signing up done")
                 }
-            } catch (e) {
-                console.log(e)
-                this.error=e
+
+                const redirectURL = "/" + (this.$route.query.redirect || "coaches")
+                this.$router.replace(redirectURL)
+            } catch (err) {
+                console.log(err)
+                this.error=err
             }
             this.isLoading=false
         },
