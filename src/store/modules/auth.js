@@ -1,9 +1,10 @@
+let timer;
 export default {
     state() {
         return {
             token: null,
             userId: null,
-            tokenExpiration: null,
+            didAutoLogout: false,
         }
     },
 
@@ -12,7 +13,11 @@ export default {
         setUser(state, payload) {
             state.token = payload.token
             state.userId = payload.userId
-            state.tokenExpiration = payload.tokenExpiration
+            state.didAutoLogout = false
+        },
+
+        setAutoLogout(state) {
+            state.didAutoLogout = true
         }
     },
 
@@ -58,14 +63,22 @@ export default {
                 throw new Error(responseData.message || "Failed to authenticate, check your credentials")
 
             }
+            // const expireIn = +responseData.expiresIn * 1000
+            const expireIn = 5000
+            const expireDate = new Date().getTime() + expireIn
+
 
             localStorage.setItem('token', responseData.idToken)
             localStorage.setItem('userId', responseData.localId)
+            localStorage.setItem('TokenExiprationDate', expireDate)
+
+            timer = setTimeout(function() {
+                context.dispatch("setAutoLogout")
+            }, expireIn)
 
             context.commit("setUser", {
                 token: responseData.idToken,
                 userId: responseData.localId,
-                tokenExpiration: responseData.expiresIn,
             })
 
         },
@@ -73,23 +86,47 @@ export default {
         autoLogin(context) {
             const token = localStorage.getItem('token')
             const userId = localStorage.getItem('userId')
+            const expireDate = localStorage.getItem('TokenExiprationDate')
+
+            const dateDiff = +expireDate - new Date().getTime()
+
+            if (dateDiff < 0) {
+                return
+            } else {
+                timer = setTimeout(function() {
+                    context.dispatch("setAutoLogout")
+                }, dateDiff)
+            }
+
 
             if (token && userId) {
                 context.commit("setUser", {
                     token: token,
                     userId: userId,
-                    tokenExpiration: null,
                 })
             }
         },
 
         logOut(context) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('TokenExiprationDate')
+
             context.commit("setUser", {
                 token: null,
                 userId: null,
-                tokenExpiration: null,
             })
+
+            clearTimeout(timer)
+        },
+
+        setAutoLogout(context) {
+            context.dispatch("logOut")
+            context.commit("setAutoLogout")
         }
+
+
+
     },
 
     getters: {
@@ -103,6 +140,10 @@ export default {
 
         isAuthenticated(state) {
             return !!state.token
+        },
+
+        didAutoLogout(state) {
+            return state.didAutoLogout
         },
     }
 }
