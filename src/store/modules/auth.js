@@ -63,8 +63,7 @@ export default {
                 throw new Error(responseData.message || "Failed to authenticate, check your credentials")
 
             }
-            // const expireIn = +responseData.expiresIn * 1000
-            const expireIn = 5000
+            const expireIn = +responseData.expiresIn * 1000
             const expireDate = new Date().getTime() + expireIn
 
 
